@@ -21,11 +21,12 @@ import java.util.List;
 @Component
 public class RedisAspect {
 
-    @Autowired
-    private RedisUtil redisUtil;
+
+//    @Autowired
+//    private RedisTemplate<String, List<Student>> redisTemplate;
 
     @Autowired
-    private RedisTemplate<String, List<Student>> redisTemplate;
+    private RedisTemplate redisTemplate;
 
     private final Logger logger = Logger.getLogger(RedisTemplate.class);
 
@@ -50,6 +51,16 @@ public class RedisAspect {
 //                System.out.println(m.getName());
 //            }
 //        }
+
+//        //测试集群
+//        for(int i = 0; i < 100; i++){
+//            redisTemplate.opsForValue().set("string哈哈" + i, i);
+//            System.out.println(redisTemplate.opsForValue().get("string哈哈" + i));
+//        }
+
+
+
+
         if (KEY != method.getName()) {
             result = pjp.proceed();
             flag = true;
@@ -57,10 +68,12 @@ public class RedisAspect {
             try {
                 if(flag || !redisTemplate.hasKey(KEY)) {
                     redisTemplate.delete(KEY);
-                    redisTemplate.opsForList().leftPush(KEY, (List<Student>)pjp.proceed());
+//                    redisTemplate.opsForList().leftPush(KEY, (List<Student>)pjp.proceed());
+                    redisTemplate.opsForList().rightPushAll(KEY, (List<Student>)pjp.proceed());
                     logger.info("update");
                 }
-                result = redisTemplate.opsForList().leftPop(KEY);
+//                result = redisTemplate.opsForList().leftPop(KEY);
+                result = redisTemplate.opsForList().range(KEY, 0, -1);
                 logger.info("search all from redis");
             } catch (Exception e) {
                 e.printStackTrace();

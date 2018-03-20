@@ -14,7 +14,7 @@ public class LoggerAspect {
     //java自带的log日志
     private final Logger logger = Logger.getLogger("DB_Controller");
 
-    @Pointcut("execution(* com.myitschool.controller.*.*(..))")
+    @Pointcut("execution(* com.myitschool.controller.*.*(..))execution(* com.myitschool.controller.restController.grabReadPackage(..))")
     private void controller(){}
 
     @Around("controller()")

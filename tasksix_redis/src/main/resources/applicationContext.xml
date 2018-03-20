@@ -12,10 +12,44 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
+
+
+
+
+
     <!--引入配置文件-->
-    <!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
-        <!--<property name="location" value="classpath:datasource/mysql.properties"/>-->
+    <!--失败-->
+    <!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >-->
+        <!--<property name="location" value="classpath:datasource/mysql.properties, classpath:cache/redis.properties"/>-->
     <!--</bean>-->
+
+
+
+
+
+
+    <!-- 将多个配置文件位置放到列表中 -->
+    <!--<bean id="propertyResources" class="java.util.ArrayList">-->
+        <!--<constructor-arg>-->
+            <!--<list>-->
+            <!--&lt;!&ndash; 这里支持多种寻址方式：classpath和file &ndash;&gt;-->
+            <!--<value>classpath:datasource/mysql.properties</value>-->
+            <!--<value>classpath:cache/redis.properties</value>-->
+            <!--&lt;!&ndash; 推荐使用file的方式引入，这样可以将配置和代码分离 &ndash;&gt;-->
+            <!--&lt;!&ndash;<value>file:/opt/demo/config/demo-remote.properties</value>&ndash;&gt;-->
+            <!--</list>-->
+        <!--</constructor-arg>-->
+    <!--</bean>-->
+
+    <!--&lt;!&ndash; 将配置文件读取到容器中，交给Spring管理 &ndash;&gt;-->
+    <!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
+        <!--<property name="locations" ref="propertyResources" />-->
+    <!--</bean>-->
+
+
+
+
+
 
     <!-- 将多个配置文件读取到容器中，交给Spring管理 -->
     <!--spring只允许有一个<context:property-placeholder/>-->
@@ -31,9 +65,36 @@
         </property>
     </bean>
 
+
+
+
+
     <!--或者这样 引入配置文件 -->
-    <!--这种方法报错-->
-    <!--<context:property-placeholder location="classpath:datasource/mysql.properties"/>-->
+    <!--失败-->
+    <!--<context:property-placeholder  location="classpath:datasource/mysql.properties" ignore-unresolvable="true"/>-->
+    <!--<context:property-placeholder  location="classpath:cache/redis.properties" ignore-unresolvable="true"/>-->
+
+
+
+
+    <!-- 将mysql属性配置文件位置放到列表中 -->
+    <!--<bean id="mysqlResources" class="java.util.ArrayList">-->
+        <!--<constructor-arg>-->
+            <!--<list>-->
+                <!--<value>classpath:datasource/mysql.properties</value>-->
+            <!--</list>-->
+        <!--</constructor-arg>-->
+    <!--</bean>-->
+
+    <!--&lt;!&ndash; 用Spring加载和管理mysql属性配置文件 &ndash;&gt;-->
+    <!--<bean id="mysqlPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
+        <!--<property name="order" value="1" />-->
+        <!--<property name="ignoreUnresolvablePlaceholders" value="true" />-->
+        <!--<property name="locations" ref="mysqlResources" />-->
+    <!--</bean>-->
+
+
+
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">

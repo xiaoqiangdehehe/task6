@@ -1,5 +1,6 @@
 package com.myitschool.controller;
 
+import com.myitschool.redPackageActivity.RedisReadPackage;
 import com.myitschool.service.baseService;
 import com.myitschool.student.Student;
 import org.json.JSONArray;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
+import sun.security.pkcs11.Secmod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 //@RestController
 @Controller
@@ -27,6 +30,9 @@ public class restController {
 
     @Autowired
     private baseService studentService;
+
+    @Autowired
+    private RedisReadPackage redisReadPackage;
 
     @RequestMapping(value = "/students", method = RequestMethod.GET)
     public ModelAndView listAllStudents() {
@@ -97,6 +103,22 @@ public class restController {
     @RequestMapping(value = "/menu")
     public String menu() {
         return "menu";
+    }
+
+    @RequestMapping(value = "/grabReadPackageIndex")
+    public String grabReadPackageIndex(){
+        redisReadPackage.init();
+        redisReadPackage.setUnusedReadPackageList();
+        return "redirect:/itschool/grabReadPackage";
+    }
+
+    @RequestMapping(value = "/grabReadPackage", method = RequestMethod.GET, produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody String grabReadPackage(){
+        JSONObject object = new JSONObject();
+        Random random = new Random();
+        String msg = redisReadPackage.grabReadPackage(random.nextInt(1000));
+        object.put("meg", msg);
+        return object.toString();
     }
 
     //JSONObject

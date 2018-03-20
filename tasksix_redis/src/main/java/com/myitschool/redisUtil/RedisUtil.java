@@ -35,6 +35,7 @@ public class RedisUtil {
         if (!redisTemplate.hasKey(key)) {
             return null;
         }
+        //有误，不能强制转换
         byte[] data = (byte[])redisTemplate.opsForValue().get(key);
         return (Object) SerializeUtil.unserialize(data);
     }
